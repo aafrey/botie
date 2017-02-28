@@ -1,5 +1,5 @@
 Docker = require 'dockerode'
-docker = new Docker({socketPath: 'var/run/docker.sock'})
+docker = new Docker({socketPath: '/var/run/docker.sock'})
 
 listServices = () ->
   docker.listServices opts, (err, data) ->
@@ -21,4 +21,5 @@ module.exports = (robot) ->
     res.reply listContainers()
 
   robot.respond /start service (.*)/i, (res) ->
-    res.reply startService()
+    service = res.match[1]
+    res.reply startService(service)
