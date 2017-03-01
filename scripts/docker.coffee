@@ -1,24 +1,15 @@
 Docker = require 'dockerode'
-docker = new Docker({socketPath: 'var/run/docker.sock'})
-
-listServices = () ->
-  docker.listServices opts, (err, data) ->
-    return data
-
-listContainers = () ->
-  docker.listContainers (err, containers) ->
-    return containers
-
-startService = (opts) ->
-  docker.createService opts, (err, service) ->
-    return service
+docker = new Docker({socketPath: '/var/run/docker.sock'})
 
 module.exports = (robot) ->
   robot.respond /list services/i, (res) ->
-    res.reply listServices()
+    docker.listServices (err, services) ->
+      res.reply JSON.stringify(services)
 
-  robot.hear /list containers/i, (res) ->
-    res.reply listContainers()
+  robot.respond /list containers/i, (res) ->
+    docker.listContainers (err, containers) ->
+      res.reply JSON.stringify(containers)
 
   robot.respond /start service (.*)/i, (res) ->
-    res.reply startService()
+    docker.createService opts, (err, service) ->
+      res.reply JSON.stringify(service)
