@@ -1,11 +1,10 @@
 {
-  "name": "bot",
+  "name": "white-whale",
   "version": "0.0.0",
   "private": true,
-  "author": "aafrey85@gmail.com",
-  "description": "listrak playground helper bot",
+  "author": "aafrey <aafrey85@gmail.com>",
+  "description": "a docker managemnt slack bot",
   "dependencies": {
-    "dockerode": "^2.3.1",
     "hubot": "^2.19.0",
     "hubot-diagnostics": "0.0.1",
     "hubot-google-images": "^0.2.6",
@@ -18,8 +17,7 @@
     "hubot-rules": "^0.1.1",
     "hubot-scripts": "^2.17.2",
     "hubot-shipit": "^0.2.0",
-    "hubot-slack": "^4.3.3",
-    "request-promise": "^4.1.1"
+    "hubot-slack": "^4.3.3"
   },
   "engines": {
     "node": "0.10.x"

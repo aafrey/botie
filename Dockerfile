@@ -7,4 +7,4 @@ ADD . /bot
 
 WORKDIR /bot
 
-CMD ["bin/hubot", "--adapter", "slack"]
+CMD ["bin/hubot", "--adapter", "slack", "--name", "white-whale"]
