@@ -2,10 +2,10 @@ rp = require 'request-promise'
 
 module.exports = (robot) ->
   robot.respond /faas (.*)/i, (res) ->
-    options = 
+    options =
       method: 'POST'
       uri: "http://gateway:8080/function/lpp_#{res.match[1]}"
-      body: 
+      body:
         action: res.match[1]
       json: true
     rp(options)
