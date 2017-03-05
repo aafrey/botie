@@ -14,7 +14,13 @@ module.exports = (robot) ->
           json: true
 
         request(options)
-          .then (data) -> res.status(201)
-          .then (error) -> Promise.reject res.status(404).send(error)
+            .then((data) ->
+              data = data.replace /^\s+|\s+$/g, ""
+              res.status(201).send(
+                "text": "Follow the links below to complete this lab..."
+                "attachments": [
+                  { "text": "https://austinfrey.com/#{data}" }
+                  { "text": "https://austinfrey.com/#{data}/editor" }
+                ]))
+            .catch((err) -> res.send(err))
 
-        res.send req.body.payload
