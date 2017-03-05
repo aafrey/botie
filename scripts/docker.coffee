@@ -7,15 +7,7 @@ sendRequest = (sendOptions, response) ->
     .then((data) ->
       if data[0]? then response.reply(JSON.stringify(data))
       else response.reply('Nothing to show...whawhawhaaaaa!'))
-    .catch((err) -> response.send(err))
-
-listMyServices = (userID, response) ->
-  options =
-    method: "POST"
-    uri: "http://gateway:8080/function/lpp_list"
-    body:
-      label: "email=#{userID}"
-    json: true
+    .catch((err) -> return err)
 
   sendRequest(options, response)
 
@@ -23,21 +15,18 @@ listAllServices = (response) ->
   options =
     method: 'POST'
     uri: 'http://gateway:8080/function/lpp_list'
-    body:
-      label: {}
+    body: {}
     json: true
 
   sendRequest(options, response)
 
 module.exports = (robot) ->
 
-  robot.respond /list services/i, id:'docker.listMyServices', (res) ->
-    listMyServices(res.envelope.user.id, res)
+  robot.respond /list services/i, id:'docker.listServices', (res) ->
+    res.reply robot.brain.get(res.envelope.user.name)
 
-  # This throws Error: <class 'docker.errors.APIError'>
-  # most likely due to the label element
-  robot.respond /list all services/i, id:'docker.lsitAllServices', (res) ->
-    listAllServices res
+  robot.respond /list user (.*) services/i, id:'docker.listUserServices', (res) ->
+    res.reply robot.brain.get(res.match[1])
 
   robot.respond /lab please/i, id:'docker.showLabs', (res) ->
     payload =
