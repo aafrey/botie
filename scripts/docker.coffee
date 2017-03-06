@@ -1,24 +1,4 @@
 request = require 'request-promise'
-Docker = require 'dockerode'
-docker = new Docker({socketPath: '/var/run/docker.sock'})
-
-sendRequest = (sendOptions, response) ->
-  request(sendOptions)
-    .then((data) ->
-      if data[0]? then response.reply(JSON.stringify(data))
-      else response.reply('Nothing to show...whawhawhaaaaa!'))
-    .catch((err) -> return err)
-
-  sendRequest(options, response)
-
-listAllServices = (response) ->
-  options =
-    method: 'POST'
-    uri: 'http://gateway:8080/function/lpp_list'
-    body: {}
-    json: true
-
-  sendRequest(options, response)
 
 module.exports = (robot) ->
 
@@ -51,19 +31,19 @@ module.exports = (robot) ->
         "text": "What do you want to do?"
         "attachments": [ {
             "text": "Choose a lab",
-            "fallback": "No game for you!"
+            "fallback": "No labs for you!"
             "callback_id": "show_labs"
             "color": "#3AA3E3"
             "attachment_type": "default"
             "actions": [
                 {
-                  "name": "test"
+                  "name": "labs"
                   "text": "recommendations"
                   "type": "button"
                   "value": "RECOMMENDATIONS"
                 }
                 {
-                  "name": "test"
+                  "name": "labs"
                   "text": "magento"
                   "type": "button"
                   "value": "magento"
