@@ -5,10 +5,16 @@ module.exports = (robot) ->
     data = JSON.parse req.body.payload
 
     doButton = (action) ->
-      action =
+      actions =
         "remove_key": ->
+          if data.actions[0].value is 'cancel' then res.status(
+            201
+          ).send('Hallelujah!')
+
           robot.brain.remove data.actions[0].value
-          res.status(201).send("Key: #{data.actions[0].value} has been removed")
+          res.status(
+            201
+          ).send("Key: #{data.actions[0].value} has been removed")
 
         "show_labs": ->
           options =
@@ -23,20 +29,17 @@ module.exports = (robot) ->
           request(
             options
           ).then((service) ->
-            labsCreated = robot.brain.get('labs_created').parseInt() or 0
             service = service.replace /^\s+|\s+$/g, ""
-
             robot.brain.set data.user.id, service
-            robot.brain.set 'labs_created', labsCreated+1
-
-            service
-          ).then((service) ->
-            res.status(201).send(
+            res.status(
+              201
+            ).send(
               "text": "Follow the links below to complete this lab..."
               "attachments": [
                 { "text": "https://austinfrey.com/#{service}" }
                 { "text": "https://austinfrey.com/#{service}/editor" }
-            ])
+              ]
+            )
           ).catch((err) -> res.send(err))
 
       do actions[action]
