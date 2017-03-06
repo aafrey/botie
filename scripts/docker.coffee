@@ -3,14 +3,16 @@ request = require 'request-promise'
 module.exports = (robot) ->
 
   robot.respond /list services/i, id:'docker.listServices', (res) ->
-    res.reply robot.brain.get(res.envelope.user.id)
+    labList = robot.brain.get res.envelope.user.id
+    res.reply labList.toString()
 
   robot.respond(
     /list user (.*) services/i,
-    id:'docker.listUserServices',
-  (res) ->
-    userID = robot.brain.userForName(res.match[1])["id"]
-    res.reply robot.brain.get(userID))
+    id:'docker.listUserServices', (res) ->
+      userID = robot.brain.userForName(res.match[1])["id"]
+      labList = robot.brain.get userID
+      res.reply labList.toString()
+  )
 
   robot.respond /remove service (.*)/i, id:'removeService', (res) ->
     options =
@@ -23,7 +25,12 @@ module.exports = (robot) ->
     request(
       options
     ).then((data) -> res.reply JSON.stringify(data)
-    ).then( -> robot.brain.remove res.envelope.user.id
+    ).then( ->
+      labList = robot.brain.get res.envelope.user.id
+      index = labList.indexOf res.match[1]
+      labList.splice index, 1
+      robot.brain.set res.envelope.user,id, labList
+      res.reply labList.toString()
     ).catch((err) -> res.reply err)
 
   robot.respond /lab please/i, id:'docker.showLabs', (res) ->
@@ -32,7 +39,7 @@ module.exports = (robot) ->
         "attachments": [ {
             "text": "Choose a lab",
             "fallback": "No labs for you!"
-            "callback_id": "show_labs"
+            "callback_id": "run_lab"
             "color": "#3AA3E3"
             "attachment_type": "default"
             "actions": [

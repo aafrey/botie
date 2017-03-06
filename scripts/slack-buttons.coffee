@@ -16,7 +16,7 @@ module.exports = (robot) ->
             201
           ).send("Key: #{data.actions[0].value} has been removed")
 
-        "show_labs": ->
+        "run_lab": ->
           options =
             method: "POST"
             uri:    "http://gateway:8080/function/lpp_run"
@@ -29,8 +29,13 @@ module.exports = (robot) ->
           request(
             options
           ).then((service) ->
+            if robot.brain.get(data.user.id)?
+              serviceList = robot.brain.get data.user.id
+            else serviceList = []
+            console.log serviceList
             service = service.replace /^\s+|\s+$/g, ""
-            robot.brain.set data.user.id, service
+            serviceList.push service if service not in serviceList
+            robot.brain.set data.user.id, serviceList
             res.status(
               201
             ).send(
