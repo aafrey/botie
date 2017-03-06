@@ -6,6 +6,7 @@ docker service rm white_whale;
 
 docker service create \
   --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+  --mount type=bind,source=/home/rancher/lpp/bot,target=/bot \
   --dns 8.8.8.8 \
   --network traefik-net \
   --env HUBOT_SLACK_TOKEN=xoxb-148970199655-LiJmclAjcNSXwlmGYXsWEnNq \

@@ -1,8 +1,5 @@
 module.exports = (robot) ->
 
-  robot.respond /labs created/i, id:'labsCreated', (res) ->
-    robot.reply robot.brain.get 'labs_created'
-
   robot.respond /add lab (.*)/i, id:'addLab', (res) ->
     if robot.brain.get('labs')? then labs = robot.brain.get 'labs'
     else labs = []
@@ -49,4 +46,6 @@ module.exports = (robot) ->
       } ]
 
     res.reply payload
-    #robot.brain.remove res.match[1]
+
+  robot.respond /cuckoo/i, (res) ->
+    res.reply 'cockledodledoo'

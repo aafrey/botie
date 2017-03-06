@@ -1,5 +1,28 @@
 request = require 'request-promise'
 
+payload = () ->
+  msg =
+    "text": "What do you want to do?"
+    "attachments": [ {
+      "text": "Choose a lab",
+      "fallback": "No labs for you!"
+      "callback_id": "run_lab"
+      "color": "#3AA3E3"
+      "attachment_type": "default"
+      "actions": []
+    } ]
+  get: () ->
+    msg
+  set: (item) ->
+    msg["attachments"][0]["actions"] = item
+
+buildButton = (buttonName) ->
+  button =
+    "name": buttonName
+    "text": buttonName
+    "type": "button"
+    "value": buttonName
+
 module.exports = (robot) ->
 
   robot.respond /list services/i, id:'docker.listServices', (res) ->
@@ -34,41 +57,46 @@ module.exports = (robot) ->
     ).catch((err) -> res.reply err)
 
   robot.respond /lab please/i, id:'docker.showLabs', (res) ->
-    payload =
-        "text": "What do you want to do?"
-        "attachments": [ {
-            "text": "Choose a lab",
-            "fallback": "No labs for you!"
-            "callback_id": "run_lab"
-            "color": "#3AA3E3"
-            "attachment_type": "default"
-            "actions": [
-                {
-                  "name": "labs"
-                  "text": "recommendations"
-                  "type": "button"
-                  "value": "RECOMMENDATIONS"
-                }
-                {
-                  "name": "labs"
-                  "text": "magento"
-                  "type": "button"
-                  "value": "magento"
-                  "confirm":
-                      "title": "Are you sure?"
-                      "text": "Really?"
-                      "ok_text": "yes"
-                      "dismiss_text": "no"
-                }
-                {
-                  "name": "text"
-                  "text": "cancel"
-                  "type": "button"
-                  "value": "cancel"
-                  "style": "danger"
-                }
-            ]
-        } ]
-
-    res.reply payload
+    msgBody = payload()
+    availableLabs = robot.brain.get 'labs'
+    actions = (buildButton button for button in availableLabs)
+    msgBody.set(actions)
+    res.reply msgBody.get()
+#    payload =
+#        "text": "What do you want to do?"
+#        "attachments": [ {
+#            "text": "Choose a lab",
+#            "fallback": "No labs for you!"
+#            "callback_id": "run_lab"
+#            "color": "#3AA3E3"
+#            "attachment_type": "default"
+#            "actions": [
+#                {
+#                  "name": "labs"
+#                  "text": "recommendations"
+#                  "type": "button"
+#                  "value": "RECOMMENDATIONS"
+#                }
+#                {
+#                  "name": "labs"
+#                  "text": "magento"
+#                  "type": "button"
+#                  "value": "magento"
+#                  "confirm":
+#                      "title": "Are you sure?"
+#                      "text": "Really?"
+#                      "ok_text": "yes"
+#                      "dismiss_text": "no"
+#                }
+#                {
+#                  "name": "text"
+#                  "text": "cancel"
+#                  "type": "button"
+#                  "value": "cancel"
+#                  "style": "danger"
+#                }
+#            ]
+#        } ]
+#
+#    res.reply payload
 
