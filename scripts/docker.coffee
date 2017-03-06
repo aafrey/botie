@@ -1,27 +1,5 @@
 request = require 'request-promise'
-
-payload = () ->
-  msg =
-    "text": "What do you want to do?"
-    "attachments": [ {
-      "text": "Choose a lab",
-      "fallback": "No labs for you!"
-      "callback_id": "run_lab"
-      "color": "#3AA3E3"
-      "attachment_type": "default"
-      "actions": []
-    } ]
-  get: () ->
-    msg
-  set: (item) ->
-    msg["attachments"][0]["actions"] = item
-
-buildButton = (buttonName) ->
-  button =
-    "name": buttonName
-    "text": buttonName
-    "type": "button"
-    "value": buttonName
+payload = require('./payloadBuilder')
 
 module.exports = (robot) ->
 
@@ -57,8 +35,5 @@ module.exports = (robot) ->
     ).catch((err) -> res.reply err)
 
   robot.respond /lab please/i, id:'docker.showLabs', (res) ->
-    msgBody = payload()
     availableLabs = robot.brain.get 'labs'
-    actions = (buildButton button for button in availableLabs)
-    msgBody.set(actions)
-    res.reply msgBody.get()
+    res.reply payload(availableLabs)

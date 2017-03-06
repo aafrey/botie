@@ -47,5 +47,3 @@ module.exports = (robot) ->
 
     res.reply payload
 
-  robot.respond /cuckoo/i, (res) ->
-    res.reply 'cockledodledoo'
