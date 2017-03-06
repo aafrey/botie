@@ -23,10 +23,28 @@ listAllServices = (response) ->
 module.exports = (robot) ->
 
   robot.respond /list services/i, id:'docker.listServices', (res) ->
-    res.reply robot.brain.get(res.envelope.user.name)
+    res.reply robot.brain.get(res.envelope.user.id)
 
-  robot.respond /list user (.*) services/i, id:'docker.listUserServices', (res) ->
-    res.reply robot.brain.get(res.match[1])
+  robot.respond(
+    /list user (.*) services/i,
+    id:'docker.listUserServices',
+  (res) ->
+    userID = robot.brain.userForName(res.match[1])["id"]
+    res.reply robot.brain.get(userID))
+
+  robot.respond /remove service (.*)/i, id:'removeService', (res) ->
+    options =
+      method: 'POST'
+      uri: 'http://gateway:8080/function/lpp_remove'
+      body:
+        service: res.match[1]
+      json: true
+
+    request(
+      options
+    ).then((data) -> res.reply JSON.stringify(data)
+    ).then( -> robot.brain.remove res.envelope.user.id
+    ).catch((err) -> res.reply err)
 
   robot.respond /lab please/i, id:'docker.showLabs', (res) ->
     payload =
@@ -67,16 +85,3 @@ module.exports = (robot) ->
 
     res.reply payload
 
-  robot.respond /have a soda/i, (res) ->
-    sodasHad = robot.brain.get('totalSodas') * 1 or 0
-
-    if sodasHad > 4
-      res.reply 'I am too fizzy'
-    else
-      res.reply 'sure'
-
-    robot.brain.set 'totalSodas', sodasHad+1
-
-  robot.respond /sleep it off/i, (res) ->
-    robot.brain.set 'totalSodas', 0
-    res.reply 'zzzzz'
