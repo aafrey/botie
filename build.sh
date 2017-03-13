@@ -10,7 +10,7 @@ docker service create \
   --dns 8.8.8.8 \
   --network traefik-net \
   --env HUBOT_SLACK_TOKEN=xoxb-148970199655-LiJmclAjcNSXwlmGYXsWEnNq \
-  --name white_whale \
+  --name ahab \
   --env REDIS_URL=redis://redis:6379/whale \
   --label traefik.port=8080 \
   --label traefik.frontend.rule=PathPrefix:/funky \

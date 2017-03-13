@@ -9,4 +9,4 @@ WORKDIR /bot
 RUN npm install
 
 EXPOSE 8080
-CMD ["bin/hubot", "--adapter", "slack", "--name", "white-whale"]
+CMD ["bin/hubot", "--adapter", "slack"]

@@ -5,6 +5,7 @@ module.exports = (robot) ->
 
   robot.respond /list services/i, id:'docker.listServices', (res) ->
     labList = robot.brain.get res.envelope.user.id
+    labList = (lab.concat(' ') for lab in labList)
     res.reply labList.toString()
 
   robot.respond(
@@ -25,7 +26,11 @@ module.exports = (robot) ->
 
     request(
       options
-    ).then((data) -> res.reply JSON.stringify(data)
+    ).then((data) ->
+      if data.includes "Error"
+        res.send "Not seeing it here Harry: `#{JSON.stringify(data)}`"
+      else
+        res.send JSON.stringify(data)
     ).then( ->
       labList = robot.brain.get res.envelope.user.id
       index = labList.indexOf res.match[1]
