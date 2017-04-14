@@ -39,6 +39,6 @@ module.exports = (robot) ->
       res.reply labList.toString()
     ).catch((err) -> res.reply err)
 
-  robot.respond /lab please/i, id:'docker.showLabs', (res) ->
+  robot.respond /start lab/i, id:'docker.showLabs', (res) ->
     availableLabs = robot.brain.get 'labs'
     res.reply payload(availableLabs)
